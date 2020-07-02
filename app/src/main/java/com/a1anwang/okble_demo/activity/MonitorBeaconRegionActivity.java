@@ -1,7 +1,18 @@
 package com.a1anwang.okble_demo.activity;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
+import android.provider.AlarmClock;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +30,7 @@ import com.a1anwang.okble_demo.base.BaseActivity;
 import com.a1anwang.okble_demo.views.CompleteUUIDInputPopupWindow;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,10 +68,19 @@ public class MonitorBeaconRegionActivity extends BaseActivity implements OKBLEBe
     public void beforeInitView() {
         beaconManager=new OKBLEBeaconManager(this);
         beaconManager.setRegionListener(this);
+        OKBLEBeaconRegion okbleBeaconRegion=OKBLEBeaconRegion.getInstance("01122334-4556-6778-899A-ABBCCDDEEFF0");
+        BeaconRegionState beaconRegionState=new BeaconRegionState();
+        beaconRegionState.beaconIdentifier=okbleBeaconRegion.getIdentifier();
+        monitoredRegionState.put(beaconRegionState.beaconIdentifier,beaconRegionState);
+        monitoredRegion.add(okbleBeaconRegion);
+        adapter.notifyDataSetChanged();
+        beaconManager.startMonitoringForRegion(okbleBeaconRegion);
     }
+
     @Override
     public void onEnterBeaconRegion(OKBLEBeaconRegion beaconRegion) {
         BeaconRegionState state=monitoredRegionState.get(beaconRegion.getIdentifier());
+        showNotification(beaconRegion.getUuid());
         if(state!=null){
             state.isIn=true;
         }
@@ -69,7 +90,51 @@ public class MonitorBeaconRegionActivity extends BaseActivity implements OKBLEBe
                 adapter.notifyDataSetChanged();
             }
         });
+    }
 
+    public void showNotification(String contentText) {
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification.Builder builder = new Notification.Builder(this)
+                .setWhen(System.currentTimeMillis())
+                .setContentTitle("MircroLife")
+                .setContentText(contentText)
+                .setSmallIcon(R.drawable.notfication_icon)
+                .setAutoCancel(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("channel"
+                    , "MircroLife"
+                    , NotificationManager.IMPORTANCE_HIGH);
+            builder.setChannelId("channel");
+            manager.createNotificationChannel(channel);
+        } else {
+            builder.setDefaults(Notification.DEFAULT_ALL);
+        }
+        int notificationId = hexStrToInt(contentText);
+        manager.notify(notificationId, builder.build());
+    }
+
+    /**
+     * 16进制字符串转成  int 整数, "A0B102"=>10531074
+     * @param valueStr   "A0B102"
+     * @return  int:10531074
+     */
+    public static int hexStrToInt(String valueStr) {
+        valueStr = valueStr.replace("-", "");
+        valueStr = valueStr.toUpperCase();
+        if (valueStr.length() % 2 != 0) {
+            valueStr = "0" + valueStr;
+        }
+        int returnValue = 0;
+        int length = valueStr.length();
+        for (int i = 0; i < length; i++) {
+            int value = charToByte(valueStr.charAt(i));
+            returnValue += Math.pow(16, length - i - 1) * value;
+        }
+        return returnValue;
+    }
+
+    private static byte charToByte(char c) {
+        return (byte) "0123456789ABCDEF".indexOf(c);
     }
 
     @Override
