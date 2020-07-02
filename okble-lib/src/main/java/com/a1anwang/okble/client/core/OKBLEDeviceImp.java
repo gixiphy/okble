@@ -7,7 +7,10 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -138,6 +141,16 @@ public class OKBLEDeviceImp implements OKBLEDevice {
         return deviceTAG;
     }
 
+    public void setDeviceStatus(DeviceStatus status) {
+        deviceStatus = status;
+        if (OKBLEDeviceListeners != null) {
+            LogUtils.e(" OKBLEDeviceListeners size:"+ OKBLEDeviceListeners.size());
+            for (OKBLEDeviceListener listener: OKBLEDeviceListeners){
+                listener.onConnectionStateChange(deviceTAG,deviceStatus);
+            }
+        }
+    }
+
     @Override
     public BluetoothDevice getBluetoothDevice() {
         return this.bluetoothDevice;
@@ -215,6 +228,51 @@ public class OKBLEDeviceImp implements OKBLEDevice {
     }
 
     @Override
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public boolean bond(boolean autoReconnect) {
+        this.autoReconnect = autoReconnect;
+        if (bluetoothDevice != null) {
+            setDeviceStatus(DeviceStatus.DEVICE_STATUS_BONDING);
+            context.registerReceiver(bondedBTReceiver, new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED));
+            if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
+                setDeviceStatus(DeviceStatus.DEVICE_STATUS_BONDNONE);
+                bluetoothDevice.createBond();
+                return (deviceStatus == DeviceStatus.DEVICE_STATUS_BONDED);
+            } else {
+                setDeviceStatus(DeviceStatus.DEVICE_STATUS_BONDED);
+                return doConnect();
+            }
+        } else {
+            LogUtils.e("the bluetoothDevice is null, please reset the bluetoothDevice");
+            return false;
+        }
+    }
+
+    private BroadcastReceiver bondedBTReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+            switch (device.getBondState()) {
+                case BluetoothDevice.BOND_BONDING:
+                    setDeviceStatus(DeviceStatus.DEVICE_STATUS_BONDING);
+                    break;
+                case BluetoothDevice.BOND_NONE:
+                    setDeviceStatus(DeviceStatus.DEVICE_STATUS_BONDNONE);
+                    break;
+                case BluetoothDevice.BOND_BONDED:
+                    setDeviceStatus(DeviceStatus.DEVICE_STATUS_BONDED);
+                    break;
+                default:
+                    break;
+            }
+            if (deviceStatus == DeviceStatus.DEVICE_STATUS_BONDED) {
+                context.unregisterReceiver(bondedBTReceiver);
+                doConnect();
+            }
+        }
+    };
+
+    @Override
     public boolean connect(boolean autoReconnect) {
         this.autoReconnect=autoReconnect;
         if(deviceStatus==DeviceStatus.DEVICE_STATUS_CONNECTED){
@@ -229,7 +287,7 @@ public class OKBLEDeviceImp implements OKBLEDevice {
     private boolean doConnect(){
 
         if (bluetoothDevice != null) {
-            deviceStatus =DeviceStatus. DEVICE_STATUS_CONNECTING;
+            setDeviceStatus(DeviceStatus. DEVICE_STATUS_CONNECTING);
             if (mBluetoothGatt != null) {
 
                 refreshGatt(mBluetoothGatt);
@@ -341,30 +399,15 @@ public class OKBLEDeviceImp implements OKBLEDevice {
                 if (newState == BluetoothGatt.STATE_CONNECTED) {// 连接成功
                     gatt.discoverServices();
                 } else if (newState == BluetoothGatt.STATE_DISCONNECTED) {// 断开连接
-                    deviceStatus = DeviceStatus.DEVICE_STATUS_DISCONNECTED;
+                    setDeviceStatus(DeviceStatus.DEVICE_STATUS_DISCONNECTED);
                     reSet();
-
-                    if (OKBLEDeviceListeners != null) {
-                        LogUtils.e(" OKBLEDeviceListeners size:"+ OKBLEDeviceListeners.size());
-                        for (OKBLEDeviceListener listener: OKBLEDeviceListeners){
-                            listener.onDisconnected(deviceTAG);
-                        }
-                    }
                     if(autoReconnect){
                         doReconnect();
                     }
                 }
             } else {
-                deviceStatus = DeviceStatus.DEVICE_STATUS_DISCONNECTED;
+                setDeviceStatus(DeviceStatus.DEVICE_STATUS_DISCONNECTED);
                 reSet();
-                if (OKBLEDeviceListeners != null) {
-                    LogUtils.e(" OKBLEDeviceListeners size:"+ OKBLEDeviceListeners.size());
-
-                    for (OKBLEDeviceListener listener: OKBLEDeviceListeners){
-                        listener.onDisconnected(deviceTAG);
-                    }
-                }
-
                 if(autoReconnect){
                     doReconnect();
                 }
@@ -378,7 +421,7 @@ public class OKBLEDeviceImp implements OKBLEDevice {
             bleOperationQueue.clear();
             handler.removeCallbacks(operationOverTimeRunnable);
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                deviceStatus = DeviceStatus.DEVICE_STATUS_CONNECTED;
+                setDeviceStatus(DeviceStatus.DEVICE_STATUS_CONNECTED);
                 connectComplete();
                 bluetoothGattServices = mBluetoothGatt.getServices();
 //                    for (BluetoothGattService server : bluetoothGattServices) {
@@ -386,12 +429,6 @@ public class OKBLEDeviceImp implements OKBLEDevice {
 //                            LogUtils.e(TAG,"characteristic "+characteristic.getUuid().toString());
 //                        }
 //                    }
-                if (OKBLEDeviceListeners != null) {
-                    for (OKBLEDeviceListener listener: OKBLEDeviceListeners){
-                        listener.onConnected(deviceTAG);
-                    }
-                }
-
             }
         }
         @Override

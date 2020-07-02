@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.a1anwang.okble.client.core.OKBLEDevice;
 import com.a1anwang.okble.client.core.OKBLEOperation;
 import com.a1anwang.okble.client.core.OKBLEDeviceListener;
 import com.a1anwang.okble.common.OKBLECharacteristicModel;
@@ -262,12 +263,7 @@ public class CharacteristicActivity extends BaseActivity implements OKBLEDeviceL
     }
 
     @Override
-    public void onConnected(String deviceTAG) {
-
-    }
-
-    @Override
-    public void onDisconnected(String deviceTAG) {
+    public void onConnectionStateChange(String deviceTAG, OKBLEDevice.DeviceStatus state) {
 
     }
 

@@ -145,30 +145,33 @@ public class DeviceDetailActivity extends BaseActivity implements OKBLEDeviceLis
             case DEVICE_STATUS_DISCONNECTED:
                 setRightText("Disconnected");
                 break;
+            case DEVICE_STATUS_BONDNONE:
+                setRightText("BONDNONE");
+                break;
+            case DEVICE_STATUS_BONDING:
+                setRightText("BONDING");
+                break;
+            case DEVICE_STATUS_BONDED:
+                setRightText("BONDED");
+                break;
         }
     }
-    @Override
-    public void onConnected(String deviceTAG) {
-        LogUtils.e(TAG," onConnected:"+deviceTAG);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                updateDeviceStatus();
-                serviceModels=okbleDevice.getServiceModels();
-                adapter.notifyDataSetChanged();
-            }
-        });
 
-    }
     @Override
-    public void onDisconnected(String deviceTAG) {
+    public void onConnectionStateChange(String deviceTAG, final OKBLEDevice.DeviceStatus state) {
+        LogUtils.e(TAG," onConnectionStateChange:"+deviceTAG);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 updateDeviceStatus();
+                if (state == OKBLEDevice.DeviceStatus.DEVICE_STATUS_CONNECTED) {
+                    serviceModels=okbleDevice.getServiceModels();
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
     }
+
     @Override
     public void onReadBattery(String deviceTAG, int battery) {
 

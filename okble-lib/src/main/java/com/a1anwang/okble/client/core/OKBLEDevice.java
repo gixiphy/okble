@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface OKBLEDevice {
     public enum DeviceStatus{
-        DEVICE_STATUS_INITIAL,DEVICE_STATUS_CONNECTING,DEVICE_STATUS_CONNECTED,DEVICE_STATUS_DISCONNECTED
+        DEVICE_STATUS_INITIAL,DEVICE_STATUS_CONNECTING,DEVICE_STATUS_CONNECTED,DEVICE_STATUS_DISCONNECTED,DEVICE_STATUS_BONDNONE,DEVICE_STATUS_BONDING,DEVICE_STATUS_BONDED
     }
     public static final int Default_OperationOverTime=3*1000;
     /**
@@ -48,6 +48,12 @@ public interface OKBLEDevice {
 
     DeviceStatus getDeviceStatus();
 
+    /**
+     * 开始綁定
+     * @param autoReconnect 是否需要在连接断开的时候自动从立案.
+     * @return true 只表示连接方法执行成功
+     */
+    boolean bond(boolean autoReconnect);
 
     /**
      * 开始连接

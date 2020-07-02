@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/00.Git-okble.iml" filepath="$PROJECT_DIR$/.idea/modules/00.Git-okble.iml" group="okble" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/okble.iml" filepath="$PROJECT_DIR$/okble.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/okble-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/okble-app.iml" group="okble/app" />
       <module fileurl="file://$PROJECT_DIR$/okble-lib/okble-lib.iml" filepath="$PROJECT_DIR$/okble-lib/okble-lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/okble-lib/okble-okble-lib.iml" filepath="$PROJECT_DIR$/.idea/modules/okble-lib/okble-okble-lib.iml" group="okble/okble-lib" />
     </modules>
   </component>
 </project>

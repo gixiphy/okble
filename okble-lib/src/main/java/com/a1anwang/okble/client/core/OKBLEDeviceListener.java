@@ -7,9 +7,8 @@ package com.a1anwang.okble.client.core;
 
 public interface OKBLEDeviceListener {
 
-     void onConnected(String deviceTAG);
+     void onConnectionStateChange(String deviceTAG, OKBLEDevice.DeviceStatus state);
 
-     void onDisconnected(String deviceTAG);
      void onReadBattery(String deviceTAG, int battery);
 
      void onReceivedValue(String deviceTAG,String uuid,byte[] value);
