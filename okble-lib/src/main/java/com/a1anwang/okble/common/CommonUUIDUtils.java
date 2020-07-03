@@ -17,16 +17,13 @@ public class CommonUUIDUtils {
     public final static String Client_Characteristic_Configuration="00002902-0000-1000-8000-00805f9b34fb";
     public final static String Battery_Level="00002a19-0000-1000-8000-00805f9b34fb";
 
-
     private static Map<String,String> uuidDescMap=new HashMap<>();
-
-
-
 
     static {
         // Sample Services.
         uuidDescMap.put("0000180d-0000-1000-8000-00805f9b34fb", "Heart Rate Service");
         uuidDescMap.put("0000180a-0000-1000-8000-00805f9b34fb", "Device Information Service");
+
         // Sample Characteristics.
         uuidDescMap.put("00002a37-0000-1000-8000-00805f9b34fb", "Heart Rate Measurement");
         uuidDescMap.put("00002a29-0000-1000-8000-00805f9b34fb", "Manufacturer Name String");
@@ -163,6 +160,7 @@ public class CommonUUIDUtils {
 
         //OAD service
         uuidDescMap.put("f000ffc0-0451-4000-b000-000000000000", "OAD Service");
+
         //OAD Characteristics
         uuidDescMap.put("f000ffc1-0451-4000-b000-000000000000", "Image Identify");
         uuidDescMap.put("f000ffc2-0451-4000-b000-000000000000", "Image Block");
@@ -176,7 +174,6 @@ public class CommonUUIDUtils {
         }else{
             return "Unknown";
         }
-
     }
 
     /**
@@ -188,14 +185,12 @@ public class CommonUUIDUtils {
         return CommonUUIDUtils.CommonUUIDStr_x.replace("xxxx", shortUUID);
     }
 
-
     /**
      *
      * @param uuidStr  2个字节,4个长度的字符串,如feea 或完整的uuid,如0000feea-0000-1000-8000-00805f9b34fb
      * @return
      */
     public static ParcelUuid createUUIDByShortOrCompleteUUIDStr(String uuidStr){
-
         if(OKBLEDataUtils.isValidShortUUID(uuidStr)){
             return ParcelUuid.fromString(createCompleteUUIDByShortUUID(uuidStr));
         }else if(OKBLEDataUtils.isValidUUID(uuidStr)){
@@ -204,4 +199,5 @@ public class CommonUUIDUtils {
             return null;
         }
     }
+
 }

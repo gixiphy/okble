@@ -17,7 +17,9 @@ public interface OKBLEDevice {
     public enum DeviceStatus{
         DEVICE_STATUS_INITIAL,DEVICE_STATUS_CONNECTING,DEVICE_STATUS_CONNECTED,DEVICE_STATUS_DISCONNECTED,DEVICE_STATUS_BONDNONE,DEVICE_STATUS_BONDING,DEVICE_STATUS_BONDED
     }
+
     public static final int Default_OperationOverTime=3*1000;
+
     /**
      * 设置TAG, 此TAG为多设备场景下分辨设备提供一种实现;如果不设置,deviceTAG会默认为设置的蓝牙设备的MAC地址
      * @param deviceTag
@@ -91,7 +93,6 @@ public interface OKBLEDevice {
      * @param value    16进制字符串形式的数据,如 EB16
      */
     void addWriteOperation(String characteristicUUID, String value, OKBLEOperation.WriteOperationListener listener);
-
 
     /**添加写入数据的操作
      * @param characteristicUUID 长度须为4，比如 ffe1;或者是一个完整的uuid:0000ffe1-0000-1000-8000-00805f9b34fb

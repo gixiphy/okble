@@ -43,6 +43,7 @@ public class OKBLEDataUtils {
     public static int buildUint16(byte hi, byte lo) {
         return (int) ((hi << 8) + (lo & 0xff));
     }
+
     /**
      *  字节数组转十六进制字符串
      *
@@ -94,15 +95,10 @@ public class OKBLEDataUtils {
         if (valueStr.length() % 2 != 0) {
             valueStr = "0" + valueStr;
         }
-
         int returnValue = 0;
-
         int length = valueStr.length();
-
         for (int i = 0; i < length; i++) {
-
             int value = charToByte(valueStr.charAt(i));
-
             returnValue += Math.pow(16, length - i - 1) * value;
         }
         return returnValue;
@@ -115,7 +111,6 @@ public class OKBLEDataUtils {
      */
     public static String intToHexStr(int i){
         String hexStr=	Integer.toHexString(i);
-
         if(hexStr.length()%2!=0){
             hexStr="0"+hexStr;
         }
@@ -164,7 +159,6 @@ public class OKBLEDataUtils {
         return (byte) re;
     }
 
-
     /**
      *截取byte数组
      * @param src
@@ -173,36 +167,29 @@ public class OKBLEDataUtils {
      * @return
      */
     public static byte[] subByteArray(byte[] src,int start,int length){
-
-
         byte[] result=new byte[length];
-
         System.arraycopy(src, start, result, 0, length);
-
-
         return result;
-
     }
+
     public static boolean isValidUUID(String uuid){
         String regEx = "^[a-fA-F0-9]{8}[-][a-fA-F0-9]{4}[-][a-fA-F0-9]{4}[-][a-fA-F0-9]{4}[-][a-fA-F0-9]{12}$";  //FDA50693-A4E2-4FB1-AFCF-C6EB07647825
         Pattern pattern = Pattern.compile(regEx);
-
         Matcher matcher = pattern.matcher(uuid);
         // 字符串是否与正则表达式相匹配
         boolean rs = matcher.matches();
-
         return rs;
     }
+
     public static boolean isValidShortUUID(String uuid){
         String regEx = "^[a-fA-F0-9]{4}$";  //FDA50693-A4E2-4FB1-AFCF-C6EB07647825
         Pattern pattern = Pattern.compile(regEx);
-
         Matcher matcher = pattern.matcher(uuid);
         // 字符串是否与正则表达式相匹配
         boolean rs = matcher.matches();
-
         return rs;
     }
+
     /**
      *
      * @param targetLenth  补齐后的长度
@@ -211,11 +198,9 @@ public class OKBLEDataUtils {
      * @return  补齐字符串
      */
     public static String formatStringLenth(int targetLenth, String src, char leftCharacter) {
-
         if(src.length()>targetLenth){
             return src.substring(src.length()-targetLenth);
         }else{
-
             int delta=targetLenth-src.length();
             for (int i = 0; i <delta ; i++) {
                 src=leftCharacter+src;

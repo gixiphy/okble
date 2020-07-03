@@ -38,7 +38,6 @@ public class BLEScanResult implements Parcelable {
     private static final int DATA_TYPE_SERVICE_DATA = 0x16;
     private static final int DATA_TYPE_MANUFACTURER_SPECIFIC_DATA = 0xFF;
 
-
     private BluetoothDevice bluetoothDevice;
 
     private byte[] advertisingData;
@@ -51,7 +50,6 @@ public class BLEScanResult implements Parcelable {
     private String completeLocalName;
 
     private Map<String, byte[]> serviceData;
-
 
     protected BLEScanResult(Parcel in) {
         TAG = in.readString();
@@ -68,7 +66,6 @@ public class BLEScanResult implements Parcelable {
         public BLEScanResult createFromParcel(Parcel in) {
             return new BLEScanResult(in);
         }
-
         @Override
         public BLEScanResult[] newArray(int size) {
             return new BLEScanResult[size];
@@ -98,12 +95,10 @@ public class BLEScanResult implements Parcelable {
     public BLEScanResult(BluetoothDevice bluetoothDevice, byte[] advertisingData, int rssi) {
         this.bluetoothDevice = bluetoothDevice;
         this.advertisingData = advertisingData;
-
         this.rssi = rssi;
       //  LogUtils.e(TAG, " rssi:" + rssi + " mac:" + bluetoothDevice.getAddress() + " name:" + bluetoothDevice.getName());
       //  LogUtils.e(TAG, " advertisingData:" + OKBLEDataUtils.Bytes2HexString(advertisingData));
         analyzeAdvertisingData();
-
     }
 
     public byte[] getAdvertisingData() {
@@ -141,9 +136,7 @@ public class BLEScanResult implements Parcelable {
 
 
     synchronized private void analyzeAdvertisingData() {
-
         if (advertisingData != null && advertisingData.length > 0) {
-
             try {
                 int index = 0;
                 while (index < advertisingData.length - 1) {
@@ -157,12 +150,9 @@ public class BLEScanResult implements Parcelable {
                         if(serviceUuids==null){
                             serviceUuids = new ArrayList<>();
                         }
-
                         byte[] serveruuids = OKBLEDataUtils.subByteArray(advertisingData, index + 2, length - 1);
                         // LogUtils.e(TAG, " serveruuids:" + OKBLEDataUtils.Bytes2HexString(serveruuids));
-
                         if (serveruuids.length % 2 == 0) {
-
                             int count = serveruuids.length / 2;
                             for (int i = 0; i < count; i++) {
                                 byte[] serveruuid = new byte[]{serveruuids[2 * i + 1], serveruuids[2 * i]};
@@ -178,9 +168,7 @@ public class BLEScanResult implements Parcelable {
                         }
                         byte[] serveruuids = OKBLEDataUtils.subByteArray(advertisingData, index + 2, length - 1);
                         // LogUtils.e(TAG, " serveruuids:" + OKBLEDataUtils.Bytes2HexString(serveruuids));
-
                         if (serveruuids.length % 2 == 0) {
-
                             int count = serveruuids.length / 2;
                             for (int i = 0; i < count; i++) {
                                 byte[] serveruuid = new byte[]{serveruuids[2 * i + 1], serveruuids[2 * i]};
@@ -189,8 +177,6 @@ public class BLEScanResult implements Parcelable {
                                 serviceUuids.add(uuid);
                                 //       LogUtils.e(TAG, "    serveruuid:" + uuid);
                             }
-
-
                         }
                     }else if(type == (byte) DATA_TYPE_SERVICE_UUIDS_128_BIT_PARTIAL){
                         if(serviceUuids==null){
@@ -198,12 +184,9 @@ public class BLEScanResult implements Parcelable {
                         }
                         byte[] serveruuids = OKBLEDataUtils.subByteArray(advertisingData, index + 2, length - 1);
                         // LogUtils.e(TAG, " serveruuids:" + OKBLEDataUtils.Bytes2HexString(serveruuids));
-
                         if (serveruuids.length % 16 == 0) {
-
                             int count = serveruuids.length / 16;
                             for (int i = 0; i < count; i++) {
-
                                 byte[] serveruuid = new byte[16];
                                 for (int j=0;j<16;j++){
                                     serveruuid[j]=serveruuids[16 * i + (15-j)];
@@ -219,12 +202,9 @@ public class BLEScanResult implements Parcelable {
                                 uuid+="-";
                                 uuid+=hexStr.substring(20, 32);
                                 //String uuid = CommonUUIDUtils.CommonUUIDStr_x.replace("xxxx", OKBLEDataUtils.BytesToHexString(serveruuid).toLowerCase());
-
                                 serviceUuids.add(uuid);
                                 //       LogUtils.e(TAG, "    serveruuid:" + uuid);
                             }
-
-
                         }
                     }else if(type == (byte) DATA_TYPE_SERVICE_UUIDS_128_BIT_COMPLETE){
                         if(serviceUuids==null){
@@ -232,12 +212,9 @@ public class BLEScanResult implements Parcelable {
                         }
                         byte[] serveruuids = OKBLEDataUtils.subByteArray(advertisingData, index + 2, length - 1);
                         // LogUtils.e(TAG, " serveruuids:" + OKBLEDataUtils.Bytes2HexString(serveruuids));
-
                         if (serveruuids.length % 16 == 0) {
-
                             int count = serveruuids.length / 16;
                             for (int i = 0; i < count; i++) {
-
                                 byte[] serveruuid = new byte[16];
                                 for (int j=0;j<16;j++){
                                     serveruuid[j]=serveruuids[16 * i + (15-j)];
@@ -253,12 +230,9 @@ public class BLEScanResult implements Parcelable {
                                 uuid+="-";
                                 uuid+=hexStr.substring(20, 32);
                                 //String uuid = CommonUUIDUtils.CommonUUIDStr_x.replace("xxxx", OKBLEDataUtils.BytesToHexString(serveruuid).toLowerCase());
-
                                 serviceUuids.add(uuid);
                                 //       LogUtils.e(TAG, "    serveruuid:" + uuid);
                             }
-
-
                         }
                     }else if (type == (byte) DATA_TYPE_SERVICE_DATA) {
                         serviceData = new HashMap<>();
@@ -268,9 +242,7 @@ public class BLEScanResult implements Parcelable {
                         // String uuidStr = CommonUUIDUtils.CommonUUIDStr_x.replace("xxxx", OKBLEDataUtils.BytesToHexString(uuid).toLowerCase());
                         String uuidStr=OKBLEDataUtils.BytesToHexString(uuid);
                         serviceData.put(uuidStr, data);
-
                         //   LogUtils.e(TAG, "    server data :" + OKBLEDataUtils.Bytes2HexString(data) + " uuid:" + uuidStr);
-
                     } else if (type == (byte) DATA_TYPE_MANUFACTURER_SPECIFIC_DATA) {
                         manufacturerSpecificData = new SparseArray<>();
                         byte[] manufacturerData = OKBLEDataUtils.subByteArray(advertisingData, index + 2, length - 1);
@@ -279,28 +251,18 @@ public class BLEScanResult implements Parcelable {
                         byte[] manufacturerValue = OKBLEDataUtils.subByteArray(manufacturerData, 2, manufacturerData.length - 2);
                         manufacturerSpecificData.append(OKBLEDataUtils.buildUint16(manufacturerId[0], manufacturerId[1]), manufacturerValue);
                         //   LogUtils.e(TAG, " manufacturerValue:" + OKBLEDataUtils.Bytes2HexString(manufacturerValue));
-
-
                     } else if (type == (byte) DATA_TYPE_LOCAL_NAME_COMPLETE) {
-
                         byte[] nameData = OKBLEDataUtils.subByteArray(advertisingData, index + 2, length - 1);
                         completeLocalName = new String(nameData);
                         //   LogUtils.e(TAG, " completeLocalName:" + completeLocalName);
                     }else if (type == (byte) DATA_TYPE_TX_POWER_LEVEL) {
-
                         txPowerLevel = advertisingData[index + 2];
                     }
-
-
                     index += length + 1;//1是length自身占一个字节
-
                 }
-
             }catch (Exception e){
                 Log.e(TAG, "unable to parse scan record: " + Arrays.toString(advertisingData));
             }
-
-
         }
     }
 
@@ -316,7 +278,6 @@ public class BLEScanResult implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
         dest.writeString(TAG);
         dest.writeParcelable(bluetoothDevice, flags);
         dest.writeByteArray(advertisingData);

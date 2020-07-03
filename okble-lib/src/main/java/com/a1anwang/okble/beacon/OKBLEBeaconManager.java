@@ -23,13 +23,9 @@ import java.util.Map;
 public class OKBLEBeaconManager {
     private Context mContext;
     private OKBLEScanManager okbleScanManager;
-
     private OKBLEBeaconScanCallback scanCallback;
-
     private OKBLEBeaconRegionListener regionListener;
-
     private Map<String, RegionObject> monitoringBeaconRegions = new HashMap<String, RegionObject>();
-
     private final int regionExitOverTime = 10 * 1000;//退出区域的超时时间，持续regionExitOverTime这么长的时间内没有再次扫描到这个区域，则视为退出区域
 
     public void setBeaconScanCallback(OKBLEBeaconScanCallback mCallback){
@@ -65,17 +61,13 @@ public class OKBLEBeaconManager {
                     if(scanCallback!=null){
                         scanCallback.onScanBeacon(okbleBeacon);
                     }
-
-
                     if(monitoringBeaconRegions.size()>0 ){
                         String key=okbleBeacon.getIdentifier();
-
                         if(monitoringBeaconRegions.containsKey(key)){
                             //如果正在监控这个区域
                             RegionObject regionObject=monitoringBeaconRegions.get(key);
                             handleEnterRegion(regionObject);
                         }
-
                         key=okbleBeacon.getUuid()+"_-1_-1";//这里的-1是对应了OKBLEBeaconRegion里的major，minor的默认值为-1
                         if (monitoringBeaconRegions.containsKey(key)) {
                             //如果正在监控这个区域
@@ -89,24 +81,18 @@ public class OKBLEBeaconManager {
                             handleEnterRegion(regionObject);
                         }
                     }
-
-
                 }
             }
-
             @Override
             public void onFailed(int code) {
 
             }
-
             @Override
             public void onStartSuccess() {
 
             }
         });
     }
-
-
 
     /**
      * 开始扫描iBeacon
@@ -134,21 +120,18 @@ public class OKBLEBeaconManager {
         String key = region.getIdentifier();
         if (!monitoringBeaconRegions.containsKey(key)) {
             monitoringBeaconRegionID++;
-
             RegionObject regionObject=new RegionObject(region,monitoringBeaconRegionID);
-
             monitoringBeaconRegions.put(key, regionObject);
             if(!isScanning()){
                 startScanBeacon();
             }
         }
     }
+
     public void stopMonitoringForRegion(OKBLEBeaconRegion region){
         String key = region.getIdentifier();
         monitoringBeaconRegions.remove(key);
     }
-
-
 
     /**
      * apple iBeacon advertise data protocol:http://blogimages.a1anwang.com/FvAYTEnxU94u-ore6GZBfPWzkSEv-shuiyin2
@@ -173,7 +156,6 @@ public class OKBLEBeaconManager {
                 }
             }
         }
-
         return null;
     }
 
@@ -195,12 +177,9 @@ public class OKBLEBeaconManager {
     }
 
     private int formatMajorFromIBeaconData(byte[] beaconData){
-
         int major=OKBLEDataUtils.buildUint16(beaconData[18],beaconData[19]);
-
         return major;
     }
-
 
     private int formatMinorFromIBeaconData(byte[] beaconData){
         int minor=OKBLEDataUtils.buildUint16(beaconData[20],beaconData[21]);
@@ -218,7 +197,6 @@ public class OKBLEBeaconManager {
         msg.what = regionObject.regionID;
         msg.obj = regionObject.region.getIdentifier();
         handler.sendMessageDelayed(msg,regionExitOverTime);//重新发送一个延时消息，
-
         if(!regionObject.hasEntered){
             regionObject.hasEntered = true;
             if(regionListener!=null){
@@ -229,7 +207,6 @@ public class OKBLEBeaconManager {
         }
     }
 
-
     Handler handler= new Handler(Looper.getMainLooper()){
         @Override
         public void handleMessage(Message msg) {
@@ -239,7 +216,6 @@ public class OKBLEBeaconManager {
             if (monitoringBeaconRegions.containsKey(key)) {
                 RegionObject regionObject= monitoringBeaconRegions.get(key);
                 OKBLEBeaconRegion beaconRegion =regionObject.region;
-
                 regionObject.hasEntered = false;
                 if(regionListener!=null){
                     if(okbleScanManager.isScanning()){
@@ -262,18 +238,14 @@ public class OKBLEBeaconManager {
 
     public interface OKBLEBeaconRegionListener{
         void onEnterBeaconRegion(OKBLEBeaconRegion beaconRegion);
-
         void onExitBeaconRegion(OKBLEBeaconRegion beaconRegion);
-
         void onRangeBeaconsInRegion(List<OKBLEBeacon> beacons);
     }
-
 
     private class RegionObject{
         boolean hasEntered;
         OKBLEBeaconRegion region;
         int regionID;
-
         public RegionObject(OKBLEBeaconRegion region, int regionID) {
             super();
             this.region=region;

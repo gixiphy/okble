@@ -23,7 +23,9 @@ public class OKBLEOperationFailedDescUtils {
         descArray.put(BluetoothGatt.GATT_FAILURE,"A GATT operation failed");
         descArray.put(0x0b,"value length is more than mtu size");
     }
+
     public static String getDesc(int errCode){
         return descArray.get(errCode,"unknown error");
     }
+
 }

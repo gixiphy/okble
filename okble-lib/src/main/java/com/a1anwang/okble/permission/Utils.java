@@ -42,6 +42,7 @@ public final class Utils {
     private static final LinkedList<Activity> ACTIVITY_LIST = new LinkedList<>();
 
     private static ActivityLifecycleCallbacks mCallbacks = new ActivityLifecycleCallbacks() {
+
         @Override
         public void onActivityCreated(Activity activity, Bundle bundle) {
             setTopActivity(activity);
@@ -76,6 +77,7 @@ public final class Utils {
         public void onActivityDestroyed(Activity activity) {
             ACTIVITY_LIST.remove(activity);
         }
+
     };
 
     private Utils() {

@@ -30,7 +30,6 @@ public class OKBLEScanManager {
     private static final int DefaultScanDuration = 10 * 1000;
     private static final int DefaultSleepDuration = 2 * 1000;
 
-
     private int scanDuration = DefaultScanDuration;
 
     private int sleepDuration = DefaultSleepDuration;
@@ -40,7 +39,6 @@ public class OKBLEScanManager {
     private Context context;
     private DeviceScanCallBack deviceScanCallBack;
     private boolean isScanning = false;
-
 
     private static final int MsgWhat_stopScan=0;
 
@@ -56,6 +54,7 @@ public class OKBLEScanManager {
     }
 
     private boolean enableBluetooth=false;
+
     /**
      *
      * @param context
@@ -75,6 +74,7 @@ public class OKBLEScanManager {
             bluetoothAdapter.disable();
         }
     }
+
     /**
      * 打开手机蓝牙
      */
@@ -87,6 +87,7 @@ public class OKBLEScanManager {
     public void setScanCallBack(DeviceScanCallBack scanCallBack) {
         this.deviceScanCallBack = scanCallBack;
     }
+
     public boolean isSupportBLE(){
         if(Build.VERSION.SDK_INT< Build.VERSION_CODES.JELLY_BEAN_MR2){
             return false;
@@ -98,7 +99,6 @@ public class OKBLEScanManager {
     }
 
     private boolean autoRebootBluetoothWhenScanFailed=false;//开启扫描返回失败的时候 是否自动调用代码重启手机蓝牙
-
 
     /**
      *
@@ -169,7 +169,6 @@ public class OKBLEScanManager {
             }
             return ;
         }
-
         boolean isGranted=  PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)||PermissionUtils.isGranted(Manifest.permission.ACCESS_COARSE_LOCATION);
         if(isGranted){
             if(deviceScanCallBack!=null){
@@ -186,7 +185,6 @@ public class OKBLEScanManager {
                     //权限授权成功
                     doScan();
                 }
-
                 @Override
                 public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
                     //权限被禁止
@@ -229,7 +227,6 @@ public class OKBLEScanManager {
                             deviceScanCallBack.onBLEDeviceScan(bleScanResult, result.getRssi());
                         }
                     }
-
                     @Override
                     public void onScanFailed(int errorCode) {
                         super.onScanFailed(errorCode);
@@ -266,16 +263,11 @@ public class OKBLEScanManager {
                 bleScanner=bluetoothAdapter.getBluetoothLeScanner();
             }
             ((BluetoothLeScanner)bleScanner).startScan(null,new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build(), (ScanCallback) bleScannerCallback);
-
         }else{
             bluetoothAdapter.stopLeScan(callback);
             bluetoothAdapter.startLeScan(callback);
         }
-
     }
-
-
-
 
     public void stopScan() {
         isScanning = false;
@@ -297,7 +289,6 @@ public class OKBLEScanManager {
         }
     }
 
-
     private BluetoothAdapter.LeScanCallback callback = new BluetoothAdapter.LeScanCallback() {
         @Override
         synchronized public void onLeScan(BluetoothDevice device, final int rssi, byte[] scanRecord) {
@@ -312,24 +303,22 @@ public class OKBLEScanManager {
     private Object bleScannerCallback;
     private Object bleScanner;
 
-
     /**
      * 判断是不是需要特殊适配的机型，比如一加手机，在android8.0系统上使用4.3API扫描方法无法扫描到BLE设备，但是使用5.0API可以扫描到
      * @return
      */
     private boolean isSpecialPhone(){
-
-
         return true;
     }
+
     public void requestLocationPermission(){
         boolean isGranted=  PermissionUtils.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)||PermissionUtils.isGranted(Manifest.permission.ACCESS_COARSE_LOCATION);
         if(isGranted) return;
         PermissionUtils.permission(PermissionConstants.LOCATION).callback(new PermissionUtils.FullCallback() {
             @Override
             public void onGranted(List<String> permissionsGranted) {
-            }
 
+            }
             @Override
             public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
 
@@ -345,7 +334,6 @@ public class OKBLEScanManager {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean network = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
         if (gps || network) {
             return true;
         }

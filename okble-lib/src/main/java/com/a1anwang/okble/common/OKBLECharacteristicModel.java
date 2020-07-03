@@ -8,6 +8,7 @@ import android.os.Parcelable;
  */
 
 public class OKBLECharacteristicModel implements Parcelable{
+
     private String uuid;
 
     private boolean canRead;
@@ -31,6 +32,7 @@ public class OKBLECharacteristicModel implements Parcelable{
     }
 
     public static final Creator<OKBLECharacteristicModel> CREATOR = new Creator<OKBLECharacteristicModel>() {
+
         @Override
         public OKBLECharacteristicModel createFromParcel(Parcel in) {
             return new OKBLECharacteristicModel(in);
@@ -40,6 +42,7 @@ public class OKBLECharacteristicModel implements Parcelable{
         public OKBLECharacteristicModel[] newArray(int size) {
             return new OKBLECharacteristicModel[size];
         }
+
     };
 
     public void setUuid(String uuid) {
@@ -115,4 +118,5 @@ public class OKBLECharacteristicModel implements Parcelable{
         dest.writeByte((byte) (canIndicate ? 1 : 0));
         dest.writeString(desc);
     }
+
 }

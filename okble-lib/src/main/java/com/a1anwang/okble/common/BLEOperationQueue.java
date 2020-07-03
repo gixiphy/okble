@@ -9,9 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class BLEOperationQueue<T> {
     private ConcurrentLinkedQueue<T> bleOperations=new ConcurrentLinkedQueue<>();
 
-
     synchronized public void add(T operation){
-
         bleOperations.add(operation);
     }
 
@@ -34,4 +32,5 @@ public class BLEOperationQueue<T> {
     public boolean isEmpty(){
         return bleOperations.isEmpty();
     }
+
 }

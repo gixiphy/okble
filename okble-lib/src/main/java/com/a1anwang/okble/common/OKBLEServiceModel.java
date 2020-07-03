@@ -23,7 +23,6 @@ public class OKBLEServiceModel {
 
     private List<OKBLECharacteristicModel> characteristicModels;
 
-
     public OKBLEServiceModel(String uuid){
         this.uuid = uuid;
     }
@@ -46,4 +45,5 @@ public class OKBLEServiceModel {
     public List<OKBLECharacteristicModel> getCharacteristicModels() {
         return characteristicModels;
     }
+
 }

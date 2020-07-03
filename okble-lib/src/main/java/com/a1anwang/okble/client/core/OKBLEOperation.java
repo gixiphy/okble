@@ -15,11 +15,9 @@ public class OKBLEOperation {
 
     public BaseOperationListener operationListener;
 
-
     public enum OperationType {
         OperationType_Read, OperationType_Write,OperationType_Write_No_Response,OperationType_Enable_Notify,OperationType_Enable_Indicate,OperationType_Disable_Notify,OperationType_Disable_Indicate,OperationType_Change_MTU
     }
-
 
     public interface BaseOperationListener{
         /**
@@ -82,11 +80,12 @@ public class OKBLEOperation {
         void onWriteValue(byte[] value);
     }
 
-
     public interface NotifyOrIndicateOperationListener extends  BaseOperationListener{
         void onNotifyOrIndicateComplete();
     }
+
     public interface ChangeMTUListener extends  BaseOperationListener{
         void onMtuChange(int mtu);
     }
+
 }

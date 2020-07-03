@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice;
  */
 
 public class OKBLEBeacon {
+
     private String name;
     private int major;
     private int minor;
@@ -74,7 +75,6 @@ public class OKBLEBeacon {
 
     @Override
     public String toString() {
-
         return "Beacon:[ uuid:"+uuid+" major:"+major+" minor:"+minor+"]";
     }
 
@@ -82,4 +82,5 @@ public class OKBLEBeacon {
         String key= uuid+"_"+major+"_"+minor;
         return key;
     }
+
 }

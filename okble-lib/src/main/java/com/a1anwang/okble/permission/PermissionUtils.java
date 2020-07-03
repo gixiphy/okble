@@ -326,13 +326,12 @@ public final class PermissionUtils {
             finish();
             return true;
         }
+
     }
 
 
     public interface OnRationaleListener {
-
         void rationale(ShouldRequest shouldRequest);
-
         interface ShouldRequest {
             void again(boolean again);
         }
@@ -340,17 +339,16 @@ public final class PermissionUtils {
 
     public interface SimpleCallback {
         void onGranted();
-
         void onDenied();
     }
 
     public interface FullCallback {
         void onGranted(List<String> permissionsGranted);
-
         void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied);
     }
 
     public interface ThemeCallback {
         void onActivityCreate(Activity activity);
     }
+
 }
