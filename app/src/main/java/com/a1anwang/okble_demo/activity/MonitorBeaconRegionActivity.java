@@ -166,7 +166,6 @@ public class MonitorBeaconRegionActivity extends BaseActivity implements OKBLEBe
         setTitle("Monitor BeaconRegion");
         findViewById(R.id.layout_uuid).setOnClickListener(this);
         findViewById(R.id.btn_add).setOnClickListener(this);
-
         listView=findViewById(R.id.listview);
         listView.setAdapter(adapter);
     }
@@ -187,10 +186,8 @@ public class MonitorBeaconRegionActivity extends BaseActivity implements OKBLEBe
                 }
                 EditText edit_major= findViewById(R.id.edit_major);
                 String majorStr=edit_major.getText().toString();
-
                 EditText edit_minor= findViewById(R.id.edit_minor);
                 String minorStr=edit_minor.getText().toString();
-
                 int major=-1;
                 int minor=-1;
                 if(!TextUtils.isEmpty(majorStr)&&TextUtils.isDigitsOnly(majorStr)){
@@ -199,7 +196,6 @@ public class MonitorBeaconRegionActivity extends BaseActivity implements OKBLEBe
                 if(!TextUtils.isEmpty(minorStr)&&TextUtils.isDigitsOnly(minorStr)){
                     minor=Integer.valueOf(minorStr);
                 }
-
                 OKBLEBeaconRegion okbleBeaconRegion;
                 if((major>=0&&major<=65535)&&(minor>=0&&minor<=65535)){
                      okbleBeaconRegion=OKBLEBeaconRegion.getInstance(uuid,major,minor);
@@ -210,18 +206,15 @@ public class MonitorBeaconRegionActivity extends BaseActivity implements OKBLEBe
                         okbleBeaconRegion=OKBLEBeaconRegion.getInstance(uuid);
                     }
                 }
-
                 if(monitoredRegionState.containsKey(okbleBeaconRegion.getIdentifier())){
                     return;//已存在，return
                 }
-
                 BeaconRegionState beaconRegionState=new BeaconRegionState();
                 beaconRegionState.beaconIdentifier=okbleBeaconRegion.getIdentifier();
                 monitoredRegionState.put(beaconRegionState.beaconIdentifier,beaconRegionState);
                 monitoredRegion.add(okbleBeaconRegion);
                 adapter.notifyDataSetChanged();
                 beaconManager.startMonitoringForRegion(okbleBeaconRegion);
-
                 break;
             case R.id.layout_uuid:
                 showHexInput();
@@ -264,12 +257,10 @@ public class MonitorBeaconRegionActivity extends BaseActivity implements OKBLEBe
                 viewholder = new ViewHolder();
                 convertView = getLayoutInflater().inflate(R.layout.list_item_region, null);
                 convertView.setTag(viewholder);
-
                 viewholder.tv_uuid = (TextView) convertView.findViewById(R.id.tv_uuid);
                 viewholder.tv_major = (TextView) convertView.findViewById(R.id.tv_major);
                 viewholder.tv_minor = (TextView) convertView.findViewById(R.id.tv_minor);
                 viewholder.tv_state = (TextView) convertView.findViewById(R.id.tv_state);
-
             }else{
                 viewholder = (ViewHolder) convertView.getTag();
             }
@@ -277,7 +268,6 @@ public class MonitorBeaconRegionActivity extends BaseActivity implements OKBLEBe
             viewholder.tv_uuid.setText(okbleBeaconRegion.getUuid());
             viewholder.tv_major.setText(okbleBeaconRegion.getMajor()<0? "null":""+okbleBeaconRegion.getMajor());
             viewholder.tv_minor.setText(okbleBeaconRegion.getMinor()<0? "null":""+okbleBeaconRegion.getMinor());
-
             BeaconRegionState state=monitoredRegionState.get(okbleBeaconRegion.getIdentifier());
             if(state.isIn){
                 viewholder.tv_state.setText("In");
@@ -285,26 +275,19 @@ public class MonitorBeaconRegionActivity extends BaseActivity implements OKBLEBe
             }else{
                 viewholder.tv_state.setText("Out");
                 viewholder.tv_state.setTextColor(getResources().getColor(R.color.red));
-
             }
-
             return convertView;
         }
     };
-
-
 
     class ViewHolder {
         TextView tv_uuid;
         TextView tv_major;
         TextView tv_minor;
         TextView tv_state;
-
-
-
     }
 
-    private   class  BeaconRegionState{
+    private class BeaconRegionState {
         String beaconIdentifier;
         boolean isIn;
     }
